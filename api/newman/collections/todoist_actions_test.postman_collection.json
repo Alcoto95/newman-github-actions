@@ -1,0 +1,138 @@
+{
+	"info": {
+		"_postman_id": "ab8a5140-ff5b-42f3-b426-4a5ffb248321",
+		"name": "todoist_actions_test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Projects",
+			"item": [
+				{
+					"name": "GetAllProjects",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"statusCode = 200;",
+									"",
+									"schema = {",
+									"  \"type\": \"array\",",
+									"  \"items\": {",
+									"    \"type\": \"object\",",
+									"    \"required\": [",
+									"      \"id\",",
+									"      \"name\",",
+									"      \"comment_count\"",
+									"    ],",
+									"    \"properties\": {",
+									"      \"id\": {",
+									"        \"type\": \"integer\"",
+									"      },",
+									"      \"name\": {",
+									"        \"type\": \"string\"",
+									"      },",
+									"      \"order\": {",
+									"        \"type\": \"integer\"",
+									"      },",
+									"      \"comment_count\": {",
+									"        \"type\": \"integer\"",
+									"      }",
+									"    }",
+									"  }",
+									"};",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonBody = pm.response.json();",
+									"const textBody = pm.response.text();",
+									"",
+									"pm.test(\"Id is present in the response\", () => {",
+									"    pm.expect(textBody).to.include(\"id\");",
+									"    ",
+									"    jsonBody.forEach((obj) => {",
+									"        pm.expect(obj).to.have.property('id');",
+									"    });",
+									"});",
+									"",
+									"pm.test('Response Body to be JSON', () => {",
+									"    pm.response.to.have.header('content-type', 'application/json');",
+									"});",
+									"",
+									"pm.test('Schema is Valid', () => {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer $token"
+							}
+						],
+						"url": {
+							"raw": "{{todoist_baseUrl}}/projects",
+							"host": [
+								"{{todoist_baseUrl}}"
+							],
+							"path": [
+								"projects"
+							]
+						},
+						"description": "This uses the new version of Postman BDD"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{todoist_API_Key}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test('Validate expected Status Code: ' + statusCode, () => {",
+					"    pm.response.to.have.status(statusCode);",
+					"});",
+					"",
+					"pm.test('Response Time below 5000 ms', () => {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});"
+				]
+			}
+		}
+	]
+}
