@@ -1,0 +1,22 @@
+name: Newman Tests
+
+on: pull_request
+
+env:
+  TODOIST_API_BASE_URL: ${{ secrets.TODOIST_API_BASE_URL }}
+  TODOIST_API_KEY: ${{ secrets.TODOIST_API_KEY }}
+
+jobs:
+  newman-run:
+    runs-on: ubuntu-latest
+    environment: todoist_env
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: |
+          npm i
+          npm run test
